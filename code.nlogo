@@ -1,20 +1,31 @@
 turtles-own
-[ preferences ]
+[ preferences sexuality ]
+
+breed [ man men ]
+breed [ woman women ]
 
 to setup
   clear-all
-  create-turtles num_people [
+  create-men num_people / 2 [
     set shape "person"
+    set color blue
+  ]
+  create-women num_people / 2 [
+    set shape "person"
+    set color pink
   ]
   layout-circle turtles 15
   reset-ticks
-  ask turtles [
-    set preferences n-of list_size other turtles
-  ]
+  ask men [ ifelse sexuality = gay [ set preferences n-of list_size other men] [ set preferences n-of list_size other women ] ]
+  ask women [ ifelse sexuality = gay [ set preferences n-of list_size other women ] [ set preferences n-of list_size other men ] ]
+  ask turtles [ if sexuality = bi [ set preferences n-of list_size other turtles ] ]
   ask turtles [
     create-links-to preferences
   ]
 end
+
+to match
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
