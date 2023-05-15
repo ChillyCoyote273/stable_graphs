@@ -1,8 +1,8 @@
 turtles-own
 [ preferences sexuality ]
 
-breed [ men man ]
-breed [ women woman ]
+breed [ man men ]
+breed [ woman women ]
 
 to setup
   clear-all
@@ -16,16 +16,16 @@ to setup
   ]
   layout-circle turtles 15
   reset-ticks
-  ask men [ ifelse sexuality = "gay" [ set preferences n-of list_size other men] [ set preferences n-of list_size other women ] ]
-  ask women [ ifelse sexuality = "gay" [ set preferences n-of list_size other women ] [ set preferences n-of list_size other men ] ]
-  ask turtles [ if sexuality = "bi" [ set preferences n-of list_size other turtles ] ]
+  ask men [ ifelse sexuality = gay [ set preferences n-of list_size other men] [ set preferences n-of list_size other women ] ]
+  ask women [ ifelse sexuality = gay [ set preferences n-of list_size other women ] [ set preferences n-of list_size other men ] ]
+  ask turtles [ if sexuality = bi [ set preferences n-of list_size other turtles ] ]
   ask turtles [
     create-links-to preferences
   ]
 end
 
 to match
-end
+e
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
