@@ -55,7 +55,7 @@ to go
     ask other sexuality [
       if myself < self [
         if member? myself sexuality [
-          if relationship_chance >= random-float 1 [
+          if relationship_chance <= random-float 1 [
             create-link-with myself
           ]
         ]
@@ -78,8 +78,8 @@ GRAPHICS-WINDOW
 1
 1
 0
-0
-0
+1
+1
 1
 -16
 16
