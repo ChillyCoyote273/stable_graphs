@@ -1,10 +1,11 @@
 breed [males male]
 breed [females female]
 
-turtles-own [ sexuality ]
+turtles-own [ sexuality attractions ]
 
 to setup
   clear-all
+  clear-output
   create-males num_people / 2 [
     set shape "person"
     set color 105
@@ -35,14 +36,26 @@ to setup
       ]
     ]
   ]
+
   ask turtles [
     ifelse sexuality = "males" [
-      set sexuality males
-    ][
-      ifelse sexuality = "female" [
-        set sexuality females
+      set attractions males
+      ifelse is-male? self [
+        set sexuality "gay"
       ][
-        set sexuality turtles
+        set sexuality "straight"
+      ]
+    ][
+      ifelse sexuality = "females" [
+        set attractions females
+        ifelse is-male? self [
+          set sexuality "straight"
+        ][
+          set sexuality "gay"
+        ]
+      ][
+        set attractions turtles
+        set sexuality "bi"
       ]
     ]
   ]
@@ -52,9 +65,9 @@ end
 
 to go
   ask turtles [
-    ask other sexuality [
+    ask other attractions [
       if myself < self [
-        if member? myself sexuality [
+        if member? myself attractions [
           if relationship_chance >= random-float 1 [
             create-link-with myself
           ]
@@ -63,11 +76,69 @@ to go
     ]
   ]
 end
+
+to data
+  let straight_relationships 0
+  let gay_relationships 0
+  let straight_average 0
+  let gay_average 0
+  let bi_average 0
+  let overall_average 0
+  ask turtles [
+    let relationships count link-neighbors
+    set overall_average overall_average + relationships
+    ifelse sexuality = "gay" [
+      set gay_average gay_average + relationships
+    ][
+      ifelse sexuality = "straight" [
+        set straight_average straight_average + relationships
+      ][
+        set bi_average bi_average + relationships
+      ]
+    ]
+  ]
+  set straight_average straight_average / count turtles with [sexuality = "straight"]
+  set gay_average gay_average / count turtles with [sexuality = "gay"]
+  set bi_average bi_average / count turtles with [sexuality = "bi"]
+  set overall_average overall_average / count turtles
+
+  ask links [
+    let breed1 member? end1 males
+    let breed2 member? end2 males
+    ifelse breed1 = breed2 [
+      set gay_relationships gay_relationships + 1
+    ][
+      set straight_relationships straight_relationships + 1
+    ]
+  ]
+
+  output-type "straight relationships: "
+  output-print straight_relationships
+  output-type "gay relationships: "
+  output-print gay_relationships
+
+  output-type "straight average: "
+  output-print straight_average
+  output-type "gay average: "
+  output-print gay_average
+  output-type "bi average: "
+  output-print bi_average
+
+  output-type "overall average: "
+  output-print overall_average
+
+  output-type "straight people: "
+  output-print count turtles with [sexuality = "straight"]
+  output-type "gay people: "
+  output-print count turtles with [sexuality = "gay"]
+  output-type "bi people: "
+  output-print count turtles with [sexuality = "bi"]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
+253
 10
-647
+690
 448
 -1
 -1
@@ -92,10 +163,10 @@ ticks
 30.0
 
 BUTTON
-16
-36
-79
-69
+46
+12
+109
+45
 NIL
 setup
 NIL
@@ -109,9 +180,9 @@ NIL
 1
 
 SLIDER
-14
+33
 102
-186
+205
 135
 num_people
 num_people
@@ -124,10 +195,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-111
-35
-174
-68
+132
+12
+195
+45
 NIL
 go
 NIL
@@ -141,9 +212,9 @@ NIL
 1
 
 SLIDER
-15
+34
 197
-187
+206
 230
 gay_chance
 gay_chance
@@ -156,9 +227,9 @@ NIL
 HORIZONTAL
 
 SLIDER
-15
+34
 147
-187
+206
 180
 bi_chance
 bi_chance
@@ -171,9 +242,9 @@ NIL
 HORIZONTAL
 
 SLIDER
-15
+34
 246
-187
+206
 279
 relationship_chance
 relationship_chance
@@ -184,6 +255,30 @@ relationship_chance
 1
 NIL
 HORIZONTAL
+
+BUTTON
+89
+57
+152
+90
+NIL
+data
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+OUTPUT
+4
+287
+246
+445
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
