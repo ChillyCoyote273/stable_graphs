@@ -84,6 +84,7 @@ to data
   let gay_average 0
   let bi_average 0
   let overall_average 0
+  let lonely_people 0
   ask turtles [
     let relationships count link-neighbors
     set overall_average overall_average + relationships
@@ -97,6 +98,7 @@ to data
       ]
     ]
   ]
+  set lonely_people count turtles with [count link-neighbors = 0]
   set straight_average straight_average / count turtles with [sexuality = "straight"]
   set gay_average gay_average / count turtles with [sexuality = "gay"]
   set bi_average bi_average / count turtles with [sexuality = "bi"]
@@ -133,6 +135,9 @@ to data
   output-print count turtles with [sexuality = "gay"]
   output-type "bi people: "
   output-print count turtles with [sexuality = "bi"]
+
+  output-type "lonely people: "
+  output-print lonely_people
 end
 @#$#@#$#@
 GRAPHICS-WINDOW

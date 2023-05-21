@@ -84,6 +84,7 @@ to data
   let gay_average 0
   let bi_average 0
   let overall_average 0
+  let lonely_people 0
   ask turtles [
     let relationships count link-neighbors
     set overall_average overall_average + relationships
@@ -97,6 +98,7 @@ to data
       ]
     ]
   ]
+  set lonely_people count turtles with [count link-neighbors = 0]
   set straight_average straight_average / count turtles with [sexuality = "straight"]
   set gay_average gay_average / count turtles with [sexuality = "gay"]
   set bi_average bi_average / count turtles with [sexuality = "bi"]
@@ -133,6 +135,9 @@ to data
   output-print count turtles with [sexuality = "gay"]
   output-type "bi people: "
   output-print count turtles with [sexuality = "bi"]
+
+  output-type "lonely people: "
+  output-print lonely_peop
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -197,10 +202,10 @@ NIL
 1
 
 SLIDER
-34
-197
-206
-230
+35
+244
+207
+277
 gay_chance
 gay_chance
 0
@@ -212,10 +217,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-34
-147
-206
-180
+35
+194
+207
+227
 bi_chance
 bi_chance
 0
@@ -227,10 +232,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-34
-246
-206
-279
+35
+293
+207
+326
 relationship_chance
 relationship_chance
 0
@@ -259,17 +264,17 @@ NIL
 1
 
 OUTPUT
-4
-287
-246
-445
+0
+364
+242
+522
 11
 
 SLIDER
-932
-272
-1104
-305
+35
+148
+207
+181
 num_males
 num_males
 0
@@ -281,10 +286,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-924
-191
-1096
-224
+34
+103
+206
+136
 num_females
 num_females
 0
