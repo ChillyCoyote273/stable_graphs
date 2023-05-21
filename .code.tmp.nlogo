@@ -1,36 +1,144 @@
-turtles-own
-[ preferences sexuality ]
+breed [males male]
+breed [females female]
 
-breed [ man men ]
-breed [ woman women ]
+turtles-own [ sexuality attractions ]
 
 to setup
   clear-all
-  create-men num_people / 2 [
+  clear-output
+  create-males num_males [
     set shape "person"
-    set color blue
+    set color 105
+    let attraction random-float 1
+    set attraction attraction - gay_chance
+    ifelse attraction < 0 [
+      set sexuality "males"
+    ][
+      ifelse attraction < bi_chance [
+        set sexuality "bi"
+      ][
+        set sexuality "females"
+      ]
+    ]
   ]
-  create-women num_people / 2 [
+  create-females num_females [
     set shape "person"
-    set color pink
+    set color 125
+    let attraction random-float 1
+    set attraction attraction - gay_chance
+    ifelse attraction < 0 [
+      set sexuality "females"
+    ][
+      ifelse attraction < bi_chance [
+        set sexuality "bi"
+      ][
+        set sexuality "males"
+      ]
+    ]
   ]
-  layout-circle turtles 15
-  reset-ticks
-  ask men [ ifelse sexuality = gay [ set preferences n-of list_size other men] [ set preferences n-of list_size other women ] ]
-  ask women [ ifelse sexuality = gay [ set preferences n-of list_size other women ] [ set preferences n-of list_size other men ] ]
-  ask turtles [ if sexuality = bi [ set preferences n-of list_size other turtles ] ]
+
   ask turtles [
-    create-links-to preferences
+    ifelse sexuality = "males" [
+      set attractions males
+      ifelse is-male? self [
+        set sexuality "gay"
+      ][
+        set sexuality "straight"
+      ]
+    ][
+      ifelse sexuality = "females" [
+        set attractions females
+        ifelse is-male? self [
+          set sexuality "straight"
+        ][
+          set sexuality "gay"
+        ]
+      ][
+        set attractions turtles
+        set sexuality "bi"
+      ]
+    ]
+  ]
+  reset-ticks
+  layout-circle turtles 15
+end
+
+to go
+  ask turtles [
+    ask other attractions [
+      if myself < self [
+        if member? myself attractions [
+          if relationship_chance >= random-float 1 [
+            create-link-with myself
+          ]
+        ]
+      ]
+    ]
   ]
 end
 
-to match
-e
+to data
+  let straight_relationships 0
+  let gay_relationships 0
+  let straight_average 0
+  let gay_average 0
+  let bi_average 0
+  let overall_average 0
+  ask turtles [
+    let relationships count link-neighbors
+    set overall_average overall_average + relationships
+    ifelse sexuality = "gay" [
+      set gay_average gay_average + relationships
+    ][
+      ifelse sexuality = "straight" [
+        set straight_average straight_average + relationships
+      ][
+        set bi_average bi_average + relationships
+      ]
+    ]
+  ]
+  set straight_average straight_average / count turtles with [sexuality = "straight"]
+  set gay_average gay_average / count turtles with [sexuality = "gay"]
+  set bi_average bi_average / count turtles with [sexuality = "bi"]
+  set overall_average overall_average / count turtles
+
+  ask links [
+    let breed1 member? end1 males
+    let breed2 member? end2 males
+    ifelse breed1 = breed2 [
+      set gay_relationships gay_relationships + 1
+    ][
+      set straight_relationships straight_relationships + 1
+    ]
+  ]
+
+  output-type "straight relationships: "
+  output-print straight_relationships
+  output-type "gay relationships: "
+  output-print gay_relationships
+
+  output-type "straight average: "
+  output-print straight_average
+  output-type "gay average: "
+  output-print gay_average
+  output-type "bi average: "
+  output-print bi_average
+
+  output-type "overall average: "
+  output-print overall_average
+
+  output-type "straight people: "
+  output-print count turtles with [sexuality = "straight"]
+  output-type "gay people: "
+  output-print count turtles with [sexuality = "gay"]
+  output-type "bi people: "
+  output-print count turtles with [sexuality = "bi"]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
+253
 10
-647
+690
 448
 -1
 -1
@@ -55,10 +163,10 @@ ticks
 30.0
 
 BUTTON
-63
-34
-126
-67
+46
+12
+109
+45
 NIL
 setup
 NIL
@@ -71,31 +179,117 @@ NIL
 NIL
 1
 
+BUTTON
+132
+12
+195
+45
+NIL
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
 SLIDER
-14
-102
-186
-135
-num_people
-num_people
-2
-100
-10.0
+34
+197
+206
+230
+gay_chance
+gay_chance
+0
+1
+0.1
+0.01
+1
+NIL
+HORIZONTAL
+
+SLIDER
+34
+147
+206
+180
+bi_chance
+bi_chance
+0
+1
+0.1
+0.01
+1
+NIL
+HORIZONTAL
+
+SLIDER
+34
+246
+206
+279
+relationship_chance
+relationship_chance
+0
+1
+0.03
+0.01
+1
+NIL
+HORIZONTAL
+
+BUTTON
+89
+57
+152
+90
+NIL
+data
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+OUTPUT
+4
+287
+246
+445
+11
+
+SLIDER
+932
+272
+1104
+305
+num_males
+num_males
+0
+50
+50.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-14
-166
-186
-199
-list_size
-list_size
-1
-10
-2.0
+924
+191
+1096
+224
+num_females
+num_females
+0
+50
+50.0
 1
 1
 NIL
@@ -447,6 +641,26 @@ NetLogo 6.3.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="experiment 1" repetitions="10" runMetricsEveryStep="true">
+    <setup>setup
+data</setup>
+    <go>go</go>
+    <timeLimit steps="1"/>
+    <enumeratedValueSet variable="relationship_chance">
+      <value value="0.03"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="bi_chance">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="num_people">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gay_chance">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
