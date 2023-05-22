@@ -64,8 +64,16 @@ to setup
 end
 
 to go
-  ask turtles [
-    ask other attractions [
+  ask turtles with [count link-neighbors > 0 ]
+  [ if breakup_chance >= random-float 1 [
+    ask one-of my-links [
+      die
+    ]
+   ]
+  ]
+
+  ask turtles with [count link-neighbors = 0 ] [
+    ask other attractions with [count link-neighbors = 0] [
       if myself < self [
         if member? myself attractions [
           if relationship_chance >= random-float 1 [
@@ -74,6 +82,10 @@ to go
         ]
       ]
     ]
+  ]
+
+  if allow_polyamory = false [
+  repeat 36 [ ask turtles with [count link-neighbors > 1 ] [ ask one-of my-links [die ] ] ]
   ]
 end
 
@@ -240,7 +252,7 @@ relationship_chance
 relationship_chance
 0
 1
-0.03
+0.1
 0.01
 1
 NIL
@@ -264,10 +276,10 @@ NIL
 1
 
 OUTPUT
-0
-364
-242
-522
+711
+15
+953
+173
 11
 
 SLIDER
@@ -299,6 +311,32 @@ num_females
 1
 NIL
 HORIZONTAL
+
+SLIDER
+36
+337
+208
+370
+breakup_chance
+breakup_chance
+0
+1
+0.03
+0.01
+1
+NIL
+HORIZONTAL
+
+SWITCH
+36
+379
+178
+412
+allow_polyamory
+allow_polyamory
+1
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
