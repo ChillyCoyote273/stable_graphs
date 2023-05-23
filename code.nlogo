@@ -85,7 +85,7 @@ to go
   ]
 
   if allow_polyamory = false [
-  repeat 36 [ ask turtles with [count link-neighbors > 1 ] [ ask one-of my-links [die ] ] ]
+  repeat 99 [ ask turtles with [count link-neighbors > 1 ] [ ask one-of my-links [die ] ] ]
   ]
 end
 
@@ -685,19 +685,48 @@ NetLogo 6.3.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="experiment 1" repetitions="10" runMetricsEveryStep="true">
-    <setup>setup
-data</setup>
-    <go>go</go>
+  <experiment name="variable female_pop" repetitions="1" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go
+data</go>
     <timeLimit steps="1"/>
+    <metric>straight_relationships</metric>
+    <metric>gay_relationships</metric>
+    <metric>straight_average</metric>
+    <metric>gay_average</metric>
+    <metric>bi_average</metric>
+    <metric>overall_average</metric>
+    <metric>count turtles with [sexuality = "straight"]</metric>
+    <metric>count turtles with [sexuality = "gay"]</metric>
+    <metric>count turtles with [sexuality = "bi"]</metric>
+    <metric>lonely_people</metric>
+    <enumeratedValueSet variable="num_females">
+      <value value="50"/>
+      <value value="45"/>
+      <value value="40"/>
+      <value value="35"/>
+      <value value="30"/>
+      <value value="25"/>
+      <value value="20"/>
+      <value value="15"/>
+      <value value="10"/>
+      <value value="5"/>
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="allow_polyamory">
+      <value value="false"/>
+    </enumeratedValueSet>
     <enumeratedValueSet variable="relationship_chance">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="num_males">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="breakup_chance">
       <value value="0.03"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="bi_chance">
       <value value="0.1"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="num_people">
-      <value value="100"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="gay_chance">
       <value value="0.1"/>
